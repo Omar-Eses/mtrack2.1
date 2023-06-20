@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "746595275459",
+    "project_id": "maham-project-1",
+    "storage_bucket": "maham-project-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:746595275459:android:047df86c14a10ea973c876",
+        "android_client_info": {
+          "package_name": "com.example.mtrack"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQF6OW9srjnKZ6YatMNd2oCIOFDkJiOFw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
