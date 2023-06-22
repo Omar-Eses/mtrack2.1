@@ -30,7 +30,7 @@ class _UserWidgetState extends State<UserWidget> {
       child: Row(
         children: [
           CircleAvatar(
-            backgroundImage: AssetImage(widget.imageUrl),
+            backgroundImage: NetworkImage(widget.imageUrl),
           ),
           const SizedBox(width: 10),
           Expanded(

@@ -98,6 +98,8 @@ class _AddMemberFormState extends State<AddMemberForm> {
                     email: user.email ?? "",
                     imageUrl: user.image ?? "",
                     onPressed: () {
+                      addMember.addToTeam(
+                          teamId: widget.teamId, userModel: user);
                       addMember.addUserToTeam(
                         teamId: widget.teamId,
                         userAdd: user,

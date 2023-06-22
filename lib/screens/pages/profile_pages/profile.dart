@@ -10,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: customAppBar(context, 'Tasks'),
-      body: const ProfileCgit ontent(),
+      body: const ProfileContent(),
       bottomNavigationBar: const CustomNavBar(currentPageIndex: 2),
     );
   }

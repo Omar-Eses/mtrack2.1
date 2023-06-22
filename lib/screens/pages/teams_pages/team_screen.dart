@@ -11,37 +11,9 @@ import 'package:provider/provider.dart';
 
 import '../../../models/team_model.dart';
 
-class TeamScreen extends StatefulWidget {
+class TeamScreen extends StatelessWidget {
   final TeamModel teamModel;
-
-  const TeamScreen({Key? key, required this.teamModel}) : super(key: key);
-
-  @override
-  _TeamScreenState createState() => _TeamScreenState();
-}
-
-class _TeamScreenState extends State<TeamScreen> {
-  bool _isLoading = false;
-
-  Future<void> _refreshData(BuildContext context) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    Provider.of<TaskViewModel>(context, listen: false)
-        .readTasks(widget.teamModel.teamId!);
-
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<TaskViewModel>(context, listen: false)
-        .readTasks(widget.teamModel.teamId!);
-  }
+  const TeamScreen({super.key, required this.teamModel});
 
   @override
   Widget build(BuildContext context) {
@@ -50,154 +22,144 @@ class _TeamScreenState extends State<TeamScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          widget.teamModel.name!,
+          teamModel.name!,
         ),
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
-              onRefresh: () => _refreshData(context),
-              child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Padding(padding: EdgeInsets.all(8)),
-                    Text(
-                      'Description',
-                    ),
-                    const SizedBox(height: 8),
-                    Text(widget.teamModel.desc!),
-                    const SizedBox(height: 10),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const CircleAvatar(
-                          radius: 35,
-                          child: Icon(
-                            Icons.account_circle,
-                            size: 35,
-                          ),
-                        ),
-                        Text(
-                          widget.teamModel.ownerName ?? '',
-                        ),
-                        const Text(
-                          'Team Leader',
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      thickness: 3,
-                      color: Theme.of(context).dividerColor,
-                    ),
-                    const SizedBox(height: 5),
-                    const Text('TASKS'),
-                    const SizedBox(height: 5),
-                    Center(
-                      child: Visibility(
-                        visible: (widget.teamModel.tasks?.isEmpty ?? true),
-                        child: const Text(
-                          'HOORAY... No tasks available',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Consumer<TaskViewModel>(
-                      builder: (context, taskViewModel, child) {
-                        if (taskViewModel.taskModelList.isEmpty) {
-                          return const Center(child: Text('No tasks found'));
-                        } else {
-                          return SingleChildScrollView(
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: taskViewModel.taskModelList.length,
-                              itemBuilder: (context, index) {
-                                final task = taskViewModel.taskModelList[index];
-                                return InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => TaskScreen(
-                                          task: task,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    clipBehavior: Clip.hardEdge,
-                                    elevation: 5,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    color: Theme.of(context).cardColor,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Text(
-                                                task.taskName ?? "",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleLarge!
-                                                    .copyWith(
-                                                      color: Theme.of(context)
-                                                          .colorScheme
-                                                          .primary,
-                                                    ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            task.taskDescription ?? '',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyMedium!
-                                                .copyWith(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                                ),
-                                          ),
-                                          const SizedBox(height: 10),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ],
+      body: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Padding(padding: EdgeInsets.all(8)),
+            Text(
+              'Description',
+            ),
+            const SizedBox(height: 8),
+            Text(teamModel.desc!),
+            const SizedBox(height: 10),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const CircleAvatar(
+                  radius: 35,
+                  child: Icon(
+                    Icons.account_circle,
+                    size: 35,
+                  ),
+                ),
+                Text(
+                  teamModel.ownerName ?? '',
+                ),
+                const Text(
+                  'Team Leader',
+                ),
+              ],
+            ),
+            Divider(
+              thickness: 3,
+              color: Theme.of(context).dividerColor,
+            ),
+            const SizedBox(height: 5),
+            const Text('TASKS'),
+            const SizedBox(height: 5),
+            Center(
+              child: Visibility(
+                visible: (teamModel.tasks?.isEmpty ?? true),
+                child: const Text(
+                  'HOORAY... No tasks available',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+            Consumer<TaskViewModel>(
+              builder: (context, taskViewModel, child) {
+                if (taskViewModel.taskModelList.isEmpty) {
+                  return const Center(child: Text('No tasks found'));
+                } else {
+                  return SingleChildScrollView(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: taskViewModel.taskModelList.length,
+                      itemBuilder: (context, index) {
+                        final task = taskViewModel.taskModelList[index];
+                        return InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TaskScreen(
+                                  task: task,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            clipBehavior: Clip.hardEdge,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            color: Theme.of(context).cardColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        task.taskName ?? "",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    task.taskDescription ?? '',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: isAdmin
-          ? AdminFab(
-              teamId: widget.teamModel.teamId!,
-              members: widget.teamModel.members!)
-          : MemberFab(
-              teamId: widget.teamModel.teamId!,
-              members: widget.teamModel.members!),
+          ? AdminFab(teamId: teamModel.teamId!, members: teamModel.members!)
+          : MemberFab(teamId: teamModel.teamId!, members: teamModel.members!),
     );
   }
 }
@@ -209,7 +171,9 @@ class AdminFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _key = GlobalKey<ExpandableFabState>();
     return ExpandableFab(
+      key: _key,
       duration: const Duration(milliseconds: 500),
       distance: 150,
       children: [

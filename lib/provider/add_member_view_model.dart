@@ -34,35 +34,46 @@ class AddMemberViewModel extends ChangeNotifier {
   }
 
   Future<void> searchUser() async {
-    final searchValue = search.text;
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-    // Clear the users list
     users = [];
     notifyListeners();
-
-    // Perform the search query
-    final QuerySnapshot querySnapshot = await firestore
-        .collection('users')
-        // .where('id', arrayContains: searchValue)
-        .get();
-
-    print(querySnapshot.docs.length);
-    // Iterate over the search results
-    for (var doc in querySnapshot.docs) {
-      // Create a UserModel object from the document data
-      UserModel userModel =
-          UserModel.fromJson(doc.data() as Map<String, dynamic>);
-      if (searchValue == userModel.email ||
-          searchValue == userModel.fName ||
-          searchValue == userModel.lName) {
-        users.add(userModel);
-        print(userModel.email);
-      }
+    final snapshot = await getUserInfo();
+    for (var element in snapshot.docs) {
+      UserModel userModel = UserModel.fromJson(element.data());
       users.add(userModel);
+      notifyListeners();
       print(userModel.email);
     }
+
     notifyListeners();
+    // final searchValue = search.text;
+    // FirebaseFirestore firestore = FirebaseFirestore.instance;
+    //
+    // // Clear the users list
+    // users = [];
+    // notifyListeners();
+    //
+    // // Perform the search query
+    // final QuerySnapshot querySnapshot = await firestore
+    //     .collection('users')
+    //     // .where('fName', arrayContains: searchValue)
+    //     .get();
+    //
+    // print(querySnapshot.docs.length);
+    // // Iterate over the search results
+    // for (var doc in querySnapshot.docs) {
+    //   // Create a UserModel object from the document data
+    //   UserModel userModel =
+    //       UserModel.fromJson(doc.data() as Map<String, dynamic>);
+    //   if (searchValue == userModel.email ||
+    //       searchValue == userModel.fName ||
+    //       searchValue == userModel.lName) {
+    //     users.add(userModel);
+    //     print(userModel.email);
+    //   }
+    //   users.add(userModel);
+    //   print(userModel.email);
+    // }
+    // notifyListeners();
   }
 
   List<UserModel> userAddToMember = [];
@@ -127,6 +138,48 @@ class AddMemberViewModel extends ChangeNotifier {
       print(err);
       UiMethods.showSnackBar(
           text: 'member already added', status: SnakeBarStatus.error);
+    }
+  }
+
+  Future<void> addToTeam(
+      {required String teamId, required UserModel userModel}) async {
+    try {
+      if (checkExist(teamId: teamId, userModel: userModel) == true) {
+        UiMethods.showSnackBar(text: "Contain", status: SnakeBarStatus.error);
+      }
+      FirebaseFirestore.instance
+          .collection('teams')
+          .doc(teamId)
+          .collection('users')
+          .doc(userModel.email)
+          .set(userModel.toMap())
+          .then((value) => UiMethods.showSnackBar(
+                text: "Addedd",
+                status: SnakeBarStatus.success,
+              ));
+    } on FirebaseException catch (err) {
+      print(err.toString());
+    }
+  }
+
+  bool exists = false;
+  Future<bool> checkExist(
+      {required String teamId, required UserModel userModel}) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection("teams")
+          .doc(teamId)
+          .collection('users')
+          .doc(userModel.email)
+          .get()
+          .then((doc) {
+        print(doc.exists);
+        exists = doc.exists;
+      });
+      return exists;
+    } catch (e) {
+      // If any error
+      return false;
     }
   }
 }

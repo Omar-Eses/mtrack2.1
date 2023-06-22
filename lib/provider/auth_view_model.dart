@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mtrack/helper/ui_helper.dart';
 import 'package:mtrack/utils/enums.dart';
+
 import '../helper/cache_helper.dart';
 import '../models/user_model.dart';
 
@@ -82,6 +83,7 @@ class AuthViewModel extends ChangeNotifier {
 
       uid = user.user!.email;
       await CacheHelper.saveData(key: 'uid', value: uid);
+      Navigator.pushNamed(context, '/home');
     } on FirebaseAuthException catch (ex) {
       if (ex.code == 'user-not-found') {
         debugPrint('not found');

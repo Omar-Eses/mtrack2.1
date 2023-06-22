@@ -74,7 +74,7 @@ class LoginPage extends StatelessWidget {
                         onPressed: () async {
                           if (auth.loginFormKey.currentState!.validate()) {
                             await auth.login(context);
-                            Navigator.pushNamed(context, '/home');
+                            // Navigator.pushNamed(context, '/home');
                           }
                         },
                         width: 250,

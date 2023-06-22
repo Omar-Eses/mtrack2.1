@@ -20,7 +20,6 @@ import 'package:mtrack/screens/pages/profile_pages/settings.dart';
 import 'package:mtrack/screens/pages/teams_pages/add_member.dart';
 import 'package:mtrack/screens/pages/teams_pages/create_team_form.dart';
 import 'package:mtrack/screens/pages/teams_pages/manage_members.dart';
-import 'package:mtrack/screens/pages/teams_pages/task_related/task_screen.dart';
 import 'package:mtrack/screens/pages/teams_pages/teams_screen.dart';
 import 'package:mtrack/screens/pages/teams_pages/view_members.dart';
 import 'package:mtrack/screens/wrapper.dart';

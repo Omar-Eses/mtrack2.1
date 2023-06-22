@@ -4,7 +4,7 @@
             "outputFile": "com.example.mtrack.app-mergeDebugResources-26:/values-night-v8/values-night-v8.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\User\\Desktop\\mtrack2.0-master\\android\\app\\src\\main\\res\\values-night\\styles.xml",
+                    "source": "/Users/thamerkehail/mtrack2.1/android/app/src/main/res/values-night/styles.xml",
                     "from": {
                         "startLines": "3,14",
                         "startColumns": "4,4",

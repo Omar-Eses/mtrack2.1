@@ -134,7 +134,7 @@ class TeamViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // update team members 
+  // update team members
   Future<void> updateTeamMembers(
       {required String teamId, required List<String> members}) async {
     isLoading = true;
@@ -149,8 +149,7 @@ class TeamViewModel extends ChangeNotifier {
           status: SnakeBarStatus.success);
     } catch (ex) {
       UiMethods.showSnackBar(
-          text: "Failed to update team members",
-          status: SnakeBarStatus.error);
+          text: "Failed to update team members", status: SnakeBarStatus.error);
     }
 
     isLoading = false;
