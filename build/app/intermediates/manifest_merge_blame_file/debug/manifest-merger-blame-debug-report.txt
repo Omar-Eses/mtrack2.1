@@ -98,31 +98,31 @@
 74            android:value="2" />
 75
 76        <service
-76-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
+76-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-14:19
 77            android:name="com.google.firebase.components.ComponentDiscoveryService"
-77-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
+77-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:10:18-89
 78            android:directBootAware="true"
 78-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:34:13-43
 79            android:exported="false" >
 79-->[com.google.firebase:firebase-analytics-ktx:21.3.0] /Users/thamerkehail/.gradle/caches/transforms-3/0ea85b99a798b95213d2ffb4988fd4b4/transformed/jetified-firebase-analytics-ktx-21.3.0/AndroidManifest.xml:10:13-37
 80            <meta-data
-80-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
-81                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
-81-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+80-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+81                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestoreRegistrar"
+81-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-134
 82                android:value="com.google.firebase.components.ComponentRegistrar" />
-82-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+82-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 83            <meta-data
-83-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
-84                android:name="com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar"
-84-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-126
+83-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+84                android:name="com.google.firebase.components:io.flutter.plugins.firebase.auth.FlutterFirebaseAuthRegistrar"
+84-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
 85                android:value="com.google.firebase.components.ComponentRegistrar" />
-85-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+85-->[:firebase_auth] /Users/thamerkehail/mtrack2.1/build/firebase_auth/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 86            <meta-data
-86-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
-87                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestoreRegistrar"
-87-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-134
+86-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+87                android:name="com.google.firebase.components:io.flutter.plugins.firebase.storage.FlutterFirebaseAppRegistrar"
+87-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-126
 88                android:value="com.google.firebase.components.ComponentRegistrar" />
-88-->[:cloud_firestore] /Users/thamerkehail/mtrack2.1/build/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+88-->[:firebase_storage] /Users/thamerkehail/mtrack2.1/build/firebase_storage/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
 89            <meta-data
 89-->[:firebase_core] /Users/thamerkehail/mtrack2.1/build/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
 90                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
@@ -148,17 +148,17 @@
 100                android:value="com.google.firebase.components.ComponentRegistrar" />
 100-->[com.google.firebase:firebase-auth:22.0.0] /Users/thamerkehail/.gradle/caches/transforms-3/f2585cf44996ac27f88306250cf33811/transformed/jetified-firebase-auth-22.0.0/AndroidManifest.xml:71:17-82
 101            <meta-data
-101-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:32:13-34:85
-102                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
-102-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:33:17-107
+101-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:19:13-21:85
+102                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+102-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:20:17-111
 103                android:value="com.google.firebase.components.ComponentRegistrar" />
-103-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:34:17-82
+103-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:21:17-82
 104            <meta-data
-104-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:19:13-21:85
-105                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
-105-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:20:17-111
+104-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:32:13-34:85
+105                android:name="com.google.firebase.components:com.google.firebase.storage.StorageRegistrar"
+105-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:33:17-107
 106                android:value="com.google.firebase.components.ComponentRegistrar" />
-106-->[com.google.firebase:firebase-firestore:24.6.1] /Users/thamerkehail/.gradle/caches/transforms-3/c07518f925c34bb7069820deb2ec2978/transformed/jetified-firebase-firestore-24.6.1/AndroidManifest.xml:21:17-82
+106-->[com.google.firebase:firebase-storage:20.2.0] /Users/thamerkehail/.gradle/caches/transforms-3/bee9e41a523c15b021caf77eeb59d725/transformed/jetified-firebase-storage-20.2.0/AndroidManifest.xml:34:17-82
 107            <meta-data
 107-->[com.google.android.gms:play-services-measurement-api:21.3.0] /Users/thamerkehail/.gradle/caches/transforms-3/5a04a59768dbef76c9a94429546de2a1/transformed/jetified-play-services-measurement-api-21.3.0/AndroidManifest.xml:31:13-33:85
 108                android:name="com.google.firebase.components:com.google.firebase.analytics.connector.internal.AnalyticsConnectorRegistrar"
@@ -280,27 +280,27 @@
 174            android:visibleToInstantApps="true" />
 174-->[com.google.android.gms:play-services-auth:20.5.0] /Users/thamerkehail/.gradle/caches/transforms-3/2059921191d4acbb9f1b9ad3b6710ac6/transformed/jetified-play-services-auth-20.5.0/AndroidManifest.xml:37:13-48
 175
-176        <activity
-176-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
-177            android:name="com.google.android.gms.common.api.GoogleApiActivity"
-177-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:19-85
-178            android:exported="false"
-178-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:22:19-43
-179            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-179-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:21:19-78
-180
-181        <provider
-181-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:25:9-30:39
-182            android:name="com.google.firebase.provider.FirebaseInitProvider"
-182-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:26:13-77
-183            android:authorities="com.example.mtrack.firebaseinitprovider"
-183-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:27:13-72
-184            android:directBootAware="true"
-184-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:28:13-43
+176        <provider
+176-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:25:9-30:39
+177            android:name="com.google.firebase.provider.FirebaseInitProvider"
+177-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:26:13-77
+178            android:authorities="com.example.mtrack.firebaseinitprovider"
+178-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:27:13-72
+179            android:directBootAware="true"
+179-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:28:13-43
+180            android:exported="false"
+180-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:29:13-37
+181            android:initOrder="100" />
+181-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:30:13-36
+182
+183        <activity
+183-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:9-22:45
+184            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+184-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:20:19-85
 185            android:exported="false"
-185-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:29:13-37
-186            android:initOrder="100" />
-186-->[com.google.firebase:firebase-common:20.3.2] /Users/thamerkehail/.gradle/caches/transforms-3/284fd5eeca4a29a0814ba444369e2acf/transformed/jetified-firebase-common-20.3.2/AndroidManifest.xml:30:13-36
+185-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:22:19-43
+186            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+186-->[com.google.android.gms:play-services-base:18.0.1] /Users/thamerkehail/.gradle/caches/transforms-3/f253648b0be692c533908993735bbd2e/transformed/jetified-play-services-base-18.0.1/AndroidManifest.xml:21:19-78
 187
 188        <receiver
 188-->[com.google.android.gms:play-services-measurement:21.3.0] /Users/thamerkehail/.gradle/caches/transforms-3/b00981f9f6519a10f9b5d1ffa94b525e/transformed/jetified-play-services-measurement-21.3.0/AndroidManifest.xml:29:9-33:20

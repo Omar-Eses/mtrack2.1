@@ -1,17 +1,20 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:mtrack/models/task_model.dart';
 import 'package:mtrack/provider/task_view_model.dart';
 import 'package:mtrack/screens/pages/teams_pages/task_related/task_content.dart';
 import 'package:mtrack/screens/pages/teams_pages/task_related/task_history.dart';
+import 'package:provider/provider.dart';
+
+import '../../../../models/team_model.dart';
 
 class TaskScreen extends StatefulWidget {
   TaskModel? task;
+  TeamModel teamModel;
   TaskScreen({
     Key? key,
     required this.task,
+    required this.teamModel,
   }) : super(key: key);
 
   @override
@@ -47,6 +50,7 @@ class _TaskScreenState extends State<TaskScreen> {
           children: [
             TaskContent(
               taskModel: widget.task!,
+              teamModel: widget.teamModel,
             ),
             TaskHistoryScreen(
               taskHistory: [

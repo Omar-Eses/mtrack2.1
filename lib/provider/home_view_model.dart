@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -38,52 +39,72 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   bool isLoading = false;
-  List<TaskModel> taskModelList = [];
+
+  List<TaskModel> userTasksList = [];
+  removeList() {
+    print("Remove");
+    userTasksList = [];
+    notifyListeners();
+  }
+
   getUserTasks() async {
-    taskModelList = [];
-    notifyListeners();
-    userModel!.myTeams!.forEach((element) {
-      readTasks(element);
-    });
-    print(taskModelList.length);
-    notifyListeners();
-  }
+    await removeList();
 
-  Future<List<TaskModel>> readTasks(String docId) async {
-    isLoading = true;
+    notifyListeners();
 
-    try {
-      DocumentSnapshot teamSnapshot =
-          await FirebaseFirestore.instance.collection('teams').doc(docId).get();
-      // read tasks from teams collection then go back to tasks collection and read based on allTasks list it should read them
-      final taskData = teamSnapshot.data() as Map<String, dynamic>;
-      final tasksId = taskData['tasks'];
-      if (tasksId != null && tasksId.isNotEmpty) {
-        for (var taskId in tasksId) {
-          DocumentSnapshot taskSnap = await FirebaseFirestore.instance
-              .collection('tasks')
-              .doc(taskId)
-              .get();
-          final taskData = taskSnap.data() as Map<String, dynamic>;
-          final taskModel = TaskModel.fromJson(taskData);
-          taskModelList.add(taskModel);
-          notifyListeners();
-          print(taskModel.toMap());
-        }
-      }
-      isLoading = false;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection('tasks')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        print(element);
+        TaskModel taskModel = TaskModel.fromJson(element.data());
+        userTasksList.add(taskModel);
+      });
       notifyListeners();
-      return taskModelList;
-    } catch (err) {
-      debugPrint('Failed to read tasks: $err');
-      return [];
-    }
+    });
   }
+
+  // Future<List<TaskModel>> readTasks(String docId) async {
+  //   isLoading = true;
+  //
+  //   try {
+  //     DocumentSnapshot teamSnapshot =
+  //         await FirebaseFirestore.instance.collection('teams').doc(docId).get();
+  //     // read tasks from teams collection then go back to tasks collection and read based on allTasks list it should read them
+  //     final taskData = teamSnapshot.data() as Map<String, dynamic>;
+  //     final tasksId = taskData['tasks'];
+  //     if (tasksId != null && tasksId.isNotEmpty) {
+  //       for (var taskId in tasksId) {
+  //         DocumentSnapshot taskSnap = await FirebaseFirestore.instance
+  //             .collection('tasks')
+  //             .doc(taskId)
+  //             .get();
+  //         final taskData = taskSnap.data() as Map<String, dynamic>;
+  //         final taskModel = TaskModel.fromJson(taskData);
+  //         taskModelList.add(taskModel);
+  //         notifyListeners();
+  //         print(taskModel.toMap());
+  //       }
+  //     }
+  //     isLoading = false;
+  //     notifyListeners();
+  //     return taskModelList;
+  //   } catch (err) {
+  //     debugPrint('Failed to read tasks: $err');
+  //     return [];
+  //   }
+  // }
 
   DateTime today = DateTime.now();
   void onDaySelected(DateTime day, DateTime focusedDay) {
     today = day;
+    userTasksList = [];
+
     notifyListeners();
+    getUserTasks();
     print(today);
     print(DateFormat('dd-MM-yyyy').format(today));
   }

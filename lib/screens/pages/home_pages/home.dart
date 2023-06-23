@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:intl/intl.dart';
 import 'package:mtrack/provider/home_view_model.dart';
-import 'package:mtrack/provider/task_view_model.dart';
 import 'package:mtrack/widgets/custom_appbar.dart';
 import 'package:mtrack/widgets/custom_navbar.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +14,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    Future.microtask(() => context.read<HomeViewModel>().removeList());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,8 +45,9 @@ class HomeContent extends StatefulWidget {
 class _HomeContentState extends State<HomeContent> {
   @override
   void initState() {
-    Future.microtask(() => context.read<HomeViewModel>().getUserData());
     Future.microtask(() => context.read<HomeViewModel>().getUserTasks());
+    Future.microtask(() => context.read<HomeViewModel>().getUserData());
+
     super.initState();
     _resetSelectedDate();
   }
@@ -57,14 +61,6 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     final home = context.watch<HomeViewModel>();
-    final tasks = context.watch<TaskViewModel>();
-    // final selectedTasks = tasks.taskModelList.where((task) {
-    //   final startDate = task.startDate;
-    //   final finishDate = task.finishDate;
-    //   return startDate != null &&
-    //       finishDate != null &&
-    //       isSameDay(startDate as DateTime?, today);
-    // }).toList();
 
     return SingleChildScrollView(
       child: Container(
@@ -113,10 +109,9 @@ class _HomeContentState extends State<HomeContent> {
             ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
-                itemCount: home.taskModelList.length,
+                itemCount: home.userTasksList.length,
                 itemBuilder: (context, index) {
-                  print(home.taskModelList[index].startDate);
-                  return home.taskModelList[index].startDate ==
+                  return home.userTasksList[index].startDate ==
                           DateFormat('dd-MM-yyyy').format(home.today)
                       ? Card(
                           clipBehavior: Clip.hardEdge,
@@ -131,12 +126,13 @@ class _HomeContentState extends State<HomeContent> {
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text(home.userTasksList[index].taskId!),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      home.taskModelList[index].taskName ?? "",
+                                      home.userTasksList[index].taskName ?? "",
                                       style: Theme.of(context)
                                           .textTheme
                                           .titleLarge!
@@ -150,7 +146,7 @@ class _HomeContentState extends State<HomeContent> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  home.taskModelList[index].taskDescription ??
+                                  home.userTasksList[index].taskDescription ??
                                       '',
                                   style: Theme.of(context)
                                       .textTheme

@@ -6,6 +6,7 @@ class TaskModel {
   String? startDate;
   String? finishDate;
   String? taskId;
+  String? attach;
   List? assignedTo;
 
   TaskModel({
@@ -16,6 +17,7 @@ class TaskModel {
     this.taskId,
     this.assignedTo,
     this.taskDescription,
+    this.attach,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
@@ -27,6 +29,7 @@ class TaskModel {
     assignedTo = json["assignedUsers"];
     taskStatus = json["task"];
     taskId = json["taskId"];
+    attach = json["attach"];
   }
   Map<String, dynamic> toMap() {
     return {
@@ -38,6 +41,7 @@ class TaskModel {
       'finishDate': finishDate,
       'assignedUsers': assignedTo,
       'taskId': taskId,
+      'attach': attach,
       // 'teamCreator': teamCreator,
     };
   }

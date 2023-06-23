@@ -141,27 +141,6 @@ class AddMemberViewModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addToTeam(
-      {required String teamId, required UserModel userModel}) async {
-    try {
-      if (checkExist(teamId: teamId, userModel: userModel) == true) {
-        UiMethods.showSnackBar(text: "Contain", status: SnakeBarStatus.error);
-      }
-      FirebaseFirestore.instance
-          .collection('teams')
-          .doc(teamId)
-          .collection('users')
-          .doc(userModel.email)
-          .set(userModel.toMap())
-          .then((value) => UiMethods.showSnackBar(
-                text: "Addedd",
-                status: SnakeBarStatus.success,
-              ));
-    } on FirebaseException catch (err) {
-      print(err.toString());
-    }
-  }
-
   bool exists = false;
   Future<bool> checkExist(
       {required String teamId, required UserModel userModel}) async {
@@ -180,6 +159,27 @@ class AddMemberViewModel extends ChangeNotifier {
     } catch (e) {
       // If any error
       return false;
+    }
+  }
+
+  Future<void> addToTeam(
+      {required String teamId, required UserModel userModel}) async {
+    try {
+      if (checkExist(teamId: teamId, userModel: userModel) == true) {
+        UiMethods.showSnackBar(text: "Contain", status: SnakeBarStatus.error);
+      }
+      FirebaseFirestore.instance
+          .collection('teams')
+          .doc(teamId)
+          .collection('users')
+          .doc(userModel.email)
+          .set(userModel.toMap())
+          .then((value) => UiMethods.showSnackBar(
+                text: "Addedd",
+                status: SnakeBarStatus.success,
+              ));
+    } on FirebaseException catch (err) {
+      print(err.toString());
     }
   }
 }

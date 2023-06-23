@@ -11,9 +11,21 @@ import 'package:provider/provider.dart';
 
 import '../../../models/team_model.dart';
 
-class TeamScreen extends StatelessWidget {
+class TeamScreen extends StatefulWidget {
   final TeamModel teamModel;
   const TeamScreen({super.key, required this.teamModel});
+
+  @override
+  State<TeamScreen> createState() => _TeamScreenState();
+}
+
+class _TeamScreenState extends State<TeamScreen> {
+  @override
+  void initState() {
+    Future.microtask(() =>
+        context.read<TaskViewModel>().getAllTasks(widget.teamModel.tasks!));
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +34,7 @@ class TeamScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          teamModel.name!,
+          widget.teamModel.name!,
         ),
       ),
       body: SingleChildScrollView(
@@ -36,7 +48,7 @@ class TeamScreen extends StatelessWidget {
               'Description',
             ),
             const SizedBox(height: 8),
-            Text(teamModel.desc!),
+            Text(widget.teamModel.desc!),
             const SizedBox(height: 10),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +62,7 @@ class TeamScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  teamModel.ownerName ?? '',
+                  widget.teamModel.ownerName ?? '',
                 ),
                 const Text(
                   'Team Leader',
@@ -64,9 +76,10 @@ class TeamScreen extends StatelessWidget {
             const SizedBox(height: 5),
             const Text('TASKS'),
             const SizedBox(height: 5),
+            ElevatedButton(onPressed: () {}, child: Text("Leave")),
             Center(
               child: Visibility(
-                visible: (teamModel.tasks?.isEmpty ?? true),
+                visible: (widget.teamModel.tasks?.isEmpty ?? true),
                 child: const Text(
                   'HOORAY... No tasks available',
                   style: TextStyle(
@@ -78,16 +91,16 @@ class TeamScreen extends StatelessWidget {
             ),
             Consumer<TaskViewModel>(
               builder: (context, taskViewModel, child) {
-                if (taskViewModel.taskModelList.isEmpty) {
+                if (taskViewModel.allTasks.isEmpty) {
                   return const Center(child: Text('No tasks found'));
                 } else {
                   return SingleChildScrollView(
                     child: ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: taskViewModel.taskModelList.length,
+                      itemCount: taskViewModel.allTasks.length,
                       itemBuilder: (context, index) {
-                        final task = taskViewModel.taskModelList[index];
+                        final task = taskViewModel.allTasks[index];
                         return InkWell(
                           onTap: () {
                             Navigator.push(
@@ -95,6 +108,7 @@ class TeamScreen extends StatelessWidget {
                               MaterialPageRoute(
                                 builder: (context) => TaskScreen(
                                   task: task,
+                                  teamModel: widget.teamModel,
                                 ),
                               ),
                             );
@@ -158,20 +172,23 @@ class TeamScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: ExpandableFab.location,
       floatingActionButton: isAdmin
-          ? AdminFab(teamId: teamModel.teamId!, members: teamModel.members!)
-          : MemberFab(teamId: teamModel.teamId!, members: teamModel.members!),
+          ? AdminFab(
+              teamModel: widget.teamModel, members: widget.teamModel.members!)
+          : MemberFab(
+              teamModel: widget.teamModel, members: widget.teamModel.members!),
     );
   }
 }
 
 class AdminFab extends StatelessWidget {
-  final String teamId;
+  final TeamModel teamModel;
   final List members;
-  const AdminFab({super.key, required this.teamId, required this.members});
+  const AdminFab({super.key, required this.teamModel, required this.members});
 
   @override
   Widget build(BuildContext context) {
     final _key = GlobalKey<ExpandableFabState>();
+    final team = context.watch<TeamViewModel>();
     return ExpandableFab(
       key: _key,
       duration: const Duration(milliseconds: 500),
@@ -186,7 +203,7 @@ class AdminFab extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => CreateTaskForm(
                   members: members,
-                  teamId: teamId,
+                  teamModel: teamModel,
                 ),
               ),
             );
@@ -210,7 +227,7 @@ class AdminFab extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => AddMember(teamId: teamId),
+                builder: (context) => AddMember(teamId: teamModel.teamId),
               ),
             );
           },
@@ -218,9 +235,7 @@ class AdminFab extends StatelessWidget {
         FloatingActionButton(
           heroTag: null,
           child: const Icon(Icons.manage_accounts_outlined),
-          onPressed: () {
-            Navigator.popAndPushNamed(context, '/mng_team_members');
-          },
+          onPressed: () {},
         ),
       ],
     );
@@ -228,12 +243,13 @@ class AdminFab extends StatelessWidget {
 }
 
 class MemberFab extends StatelessWidget {
-  final String teamId;
+  final TeamModel teamModel;
   final List members;
-  const MemberFab({super.key, required this.teamId, required this.members});
+  const MemberFab({super.key, required this.teamModel, required this.members});
 
   @override
   Widget build(BuildContext context) {
+    final team = context.watch<TeamViewModel>();
     return ExpandableFab(
       duration: const Duration(milliseconds: 500),
       distance: 75,
@@ -248,7 +264,7 @@ class MemberFab extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => CreateTaskForm(
                   members: members,
-                  teamId: teamId,
+                  teamModel: teamModel,
                 ),
               ),
             );

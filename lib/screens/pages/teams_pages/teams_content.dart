@@ -21,6 +21,7 @@ class TeamsContentState extends State<TeamsContent> {
 
   @override
   Widget build(BuildContext context) {
+    final teamViewModel = context.watch<TeamViewModel>();
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(10),
@@ -34,36 +35,26 @@ class TeamsContentState extends State<TeamsContent> {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: Consumer<TeamViewModel>(
-              builder: (context, teamViewModel, child) {
-                if (teamViewModel.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (teamViewModel.teamModelList.isEmpty) {
-                  return const Center(child: Text('No teams found.'));
-                } else {
-                  return ListView.builder(
-                    itemBuilder: (context, index) {
-                      final team = teamViewModel.teamModelList[index];
-                      return CustomTeamCard(
-                        teamName: team.name!,
-                        teamBio: team.desc ?? "",
-                        peopleInTeam: team.members ?? [],
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TeamScreen(
-                                teamModel: team,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    itemCount: teamViewModel.teamModelList.length,
-                  );
-                }
+            child: ListView.builder(
+              itemBuilder: (context, index) {
+                final team = teamViewModel.teamModelList[index];
+                return CustomTeamCard(
+                  teamName: team.name!,
+                  teamBio: team.desc ?? "",
+                  peopleInTeam: team.members ?? [],
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TeamScreen(
+                          teamModel: team,
+                        ),
+                      ),
+                    );
+                  },
+                );
               },
+              itemCount: teamViewModel.teamModelList.length,
             ),
           ),
         ],
