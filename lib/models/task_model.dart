@@ -7,6 +7,8 @@ class TaskModel {
   String? finishDate;
   String? taskId;
   String? attach;
+  String? owner;
+  String? status;
   List? assignedTo;
 
   TaskModel({
@@ -18,6 +20,8 @@ class TaskModel {
     this.assignedTo,
     this.taskDescription,
     this.attach,
+    this.owner,
+    this.status,
   });
 
   TaskModel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +34,8 @@ class TaskModel {
     taskStatus = json["task"];
     taskId = json["taskId"];
     attach = json["attach"];
+    owner = json["owner"];
+    status = json["status"];
   }
   Map<String, dynamic> toMap() {
     return {
@@ -42,6 +48,8 @@ class TaskModel {
       'assignedUsers': assignedTo,
       'taskId': taskId,
       'attach': attach,
+      'owner': owner,
+      'status': status,
       // 'teamCreator': teamCreator,
     };
   }

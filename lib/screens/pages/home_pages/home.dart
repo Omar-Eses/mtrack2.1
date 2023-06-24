@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mtrack/provider/home_view_model.dart';
+import 'package:mtrack/screens/pages/teams_pages/task_related/task_screen.dart';
 import 'package:mtrack/widgets/custom_appbar.dart';
 import 'package:mtrack/widgets/custom_navbar.dart';
 import 'package:provider/provider.dart';
@@ -16,7 +17,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    Future.microtask(() => context.read<HomeViewModel>().removeList());
+    // Future.microtask(() => context.read<HomeViewModel>().removeList());
     super.initState();
   }
 
@@ -113,58 +114,90 @@ class _HomeContentState extends State<HomeContent> {
                 itemBuilder: (context, index) {
                   return home.userTasksList[index].startDate ==
                           DateFormat('dd-MM-yyyy').format(home.today)
-                      ? Card(
-                          clipBehavior: Clip.hardEdge,
-                          elevation: 5,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          color: Theme.of(context).cardColor,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(home.userTasksList[index].taskId!),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      home.userTasksList[index].taskName ?? "",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          ),
-                                    ),
-                                  ],
+                      ? InkWell(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TaskScreen(
+                                  task: home.userTasksList[index],
                                 ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  home.userTasksList[index].taskDescription ??
-                                      '',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium!
-                                      .copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .primary,
+                              ),
+                            );
+                          },
+                          child: Card(
+                            clipBehavior: Clip.hardEdge,
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            color: Theme.of(context).cardColor,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        home.userTasksList[index].taskName ??
+                                            "",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
                                       ),
-                                ),
-                                const SizedBox(height: 10),
-                                // Row(
-                                //   children: peopleInTeam
-                                //       .map((person) =>
-                                //           CircleAvatar(child: Text(person.substring(0, 1))))
-                                //       .toList(),
-                                // ),
-                              ],
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons.delete_forever))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        home.userTasksList[index]
+                                                .taskDescription ??
+                                            '',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary,
+                                            ),
+                                      ),
+                                      Text(
+                                          "Status : ${home.userTasksList[index].status}",
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium!
+                                              .copyWith(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
+                                              ))
+                                    ],
+                                  ),
+                                  const SizedBox(height: 10),
+                                  // Row(
+                                  //   children: peopleInTeam
+                                  //       .map((person) =>
+                                  //           CircleAvatar(child: Text(person.substring(0, 1))))
+                                  //       .toList(),
+                                  // ),
+                                ],
+                              ),
                             ),
                           ),
                         )

@@ -59,8 +59,14 @@ class AssignViewModel extends ChangeNotifier {
           .doc(taskModel.taskId)
           .set(taskModel.toMap())
           .then((value) {
-        UiMethods.showSnackBar(
-            text: "Success Add User", status: SnakeBarStatus.success);
+        FirebaseFirestore.instance
+            .collection('tasks')
+            .doc(taskModel.taskId)
+            .collection('users')
+            .doc(userModel.email)
+            .set(userModel.toMap())
+            .then((value) => UiMethods.showSnackBar(
+                text: "Success Add User", status: SnakeBarStatus.success));
       }).catchError((error) {
         print(error);
       });

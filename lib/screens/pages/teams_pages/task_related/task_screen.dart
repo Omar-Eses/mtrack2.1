@@ -10,11 +10,11 @@ import '../../../../models/team_model.dart';
 
 class TaskScreen extends StatefulWidget {
   TaskModel? task;
-  TeamModel teamModel;
+  TeamModel? teamModel;
   TaskScreen({
     Key? key,
     required this.task,
-    required this.teamModel,
+    this.teamModel,
   }) : super(key: key);
 
   @override
@@ -22,6 +22,13 @@ class TaskScreen extends StatefulWidget {
 }
 
 class _TaskScreenState extends State<TaskScreen> {
+  @override
+  void initState() {
+    Future.microtask(() =>
+        context.read<TaskViewModel>().getAllUserInTasks(widget.task!.taskId!));
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final taskViewModel = Provider.of<TaskViewModel>(context);
@@ -32,12 +39,18 @@ class _TaskScreenState extends State<TaskScreen> {
         appBar: AppBar(
           title: const Text('Task page'),
           actions: [
-            IconButton(
-              onPressed: () {
-                _showDeleteTaskConfirmation(context, selectedTask?.taskName);
-              },
-              icon: const Icon(Icons.delete_outline),
-            )
+            widget.teamModel == null
+                ? SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      taskViewModel.deleteTask(
+                        taskModel: widget.task!,
+                        teamId: widget.teamModel!.teamId!,
+                        context: context,
+                      );
+                    },
+                    icon: const Icon(Icons.delete_outline),
+                  )
           ],
           bottom: const TabBar(
             tabs: [
@@ -46,11 +59,34 @@ class _TaskScreenState extends State<TaskScreen> {
             ],
           ),
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        floatingActionButton: InkWell(
+          onTap: () {
+            taskViewModel.submitTasks(
+                taskId: widget.task!.taskId!, context: context);
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            width: MediaQuery.of(context).size.width,
+            height: 65,
+            color: Colors.blueAccent.withOpacity(0.8),
+            child: Center(
+              child: Text(
+                "Submit",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
         body: TabBarView(
           children: [
             TaskContent(
               taskModel: widget.task!,
-              teamModel: widget.teamModel,
+              teamModel: widget.teamModel ?? null,
             ),
             TaskHistoryScreen(
               taskHistory: [

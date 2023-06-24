@@ -42,8 +42,8 @@ class _CustomNavBarState extends State<CustomNavBar> {
         //   widget.currentPageIndex = index;
         //   currentPageString = '$currentPageString';
         // });
-        Navigator.pop(context);
-        Navigator.pushNamed(context, '/');
+        // Navigator.pop(context);
+        // Navigator.pushNamed(context, '/');
         Navigator.pushNamed(context, currentPageString);
       },
       destinations: const <Widget>[

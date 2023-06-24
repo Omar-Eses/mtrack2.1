@@ -4,6 +4,7 @@ import 'package:flutter_octicons/flutter_octicons.dart';
 import 'package:mtrack/provider/task_view_model.dart';
 import 'package:mtrack/provider/team_view_model.dart';
 import 'package:mtrack/screens/pages/teams_pages/add_member.dart';
+import 'package:mtrack/screens/pages/teams_pages/manage_members.dart';
 import 'package:mtrack/screens/pages/teams_pages/project.dart';
 import 'package:mtrack/screens/pages/teams_pages/task_related/create_task_form.dart';
 import 'package:mtrack/screens/pages/teams_pages/task_related/task_screen.dart';
@@ -24,6 +25,7 @@ class _TeamScreenState extends State<TeamScreen> {
   void initState() {
     Future.microtask(() =>
         context.read<TaskViewModel>().getAllTasks(widget.teamModel.tasks!));
+
     super.initState();
   }
 
@@ -76,7 +78,11 @@ class _TeamScreenState extends State<TeamScreen> {
             const SizedBox(height: 5),
             const Text('TASKS'),
             const SizedBox(height: 5),
-            ElevatedButton(onPressed: () {}, child: Text("Leave")),
+            ElevatedButton(
+                onPressed: () {
+                  team.leaveTeam(widget.teamModel.teamId!, context);
+                },
+                child: Text("Leave")),
             Center(
               child: Visibility(
                 visible: (widget.teamModel.tasks?.isEmpty ?? true),
@@ -235,7 +241,13 @@ class AdminFab extends StatelessWidget {
         FloatingActionButton(
           heroTag: null,
           child: const Icon(Icons.manage_accounts_outlined),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ManageTeamMembers(teamModel: teamModel)));
+          },
         ),
       ],
     );

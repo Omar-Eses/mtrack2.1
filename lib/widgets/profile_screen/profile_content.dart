@@ -132,6 +132,17 @@ class _ProfileContentState extends State<ProfileContent> {
                 profile.logout(context);
               },
             ),
+            const SizedBox(height: 10),
+            CustomButton(
+              text: 'Delete Account',
+              width: 375,
+              height: 50,
+              color: Colors.black,
+              icon: Icons.arrow_forward_ios,
+              onPressed: () {
+                profile.deleteAccount(context);
+              },
+            ),
           ],
         ),
       ),

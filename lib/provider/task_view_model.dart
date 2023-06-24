@@ -3,12 +3,15 @@ import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mtrack/helper/ui_helper.dart';
 import 'package:mtrack/models/task_model.dart';
 import 'package:mtrack/models/team_model.dart';
+import 'package:mtrack/models/user_model.dart';
+import 'package:mtrack/screens/pages/home_pages/home.dart';
 import 'package:mtrack/utils/enums.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -63,11 +66,15 @@ class TaskViewModel extends ChangeNotifier {
         finishDate: DateFormat('dd-MM-yyyy').format(finishDate),
         taskId: taskId,
         attach: file == null ? "" : urlDownload,
+        owner: FirebaseAuth.instance.currentUser!.email.toString(),
+        status: "In Progress",
       );
 
       // add task to tasks collection
       await docRef.set(taskModel.toMap()).then((value) async {
         await getAllTasks(teamModel.tasks!);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
       });
 
       // Update tasks list in team document
@@ -133,6 +140,7 @@ class TaskViewModel extends ChangeNotifier {
   }
 
   List<TaskModel> allTasks = [];
+  List<UserModel> allUserInTask = [];
   getAllTasks(List tasks) {
     allTasks = [];
     notifyListeners();
@@ -146,6 +154,23 @@ class TaskViewModel extends ChangeNotifier {
         allTasks.add(taskModel);
         notifyListeners();
       });
+    });
+  }
+
+  getAllUserInTasks(String taskId) {
+    allUserInTask = [];
+    notifyListeners();
+    FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(taskId)
+        .collection('users')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        UserModel userModel = UserModel.fromJson(element.data());
+        allUserInTask.add(userModel);
+      });
+      notifyListeners();
     });
   }
 
@@ -183,41 +208,41 @@ class TaskViewModel extends ChangeNotifier {
   }
 
   // delete task field from team document and from tasks collection
-  Future<void> deleteTask({
-    required String taskId,
-    required String teamId,
-  }) async {
-    isLoading = true;
-    notifyListeners();
-    try {
-      // delete task from tasks collection
-      await tasksCollection.doc(taskId).delete();
-
-      // delete task from team document
-      final teamDocRef = firestore.collection('teams').doc(teamId);
-      final tasksList = await teamDocRef.get().then((teamSnap) {
-        final List<dynamic>? existingTasks = teamSnap['tasks'];
-        if (existingTasks != null) {
-          existingTasks.remove(taskId);
-          return existingTasks;
-        } else {
-          return [];
-        }
-      });
-
-      await teamDocRef.update({'tasks': tasksList}).then((value) {
-        UiMethods.showSnackBar(
-            text: 'Task deleted', status: SnakeBarStatus.success);
-      });
-    } catch (err) {
-      UiMethods.showSnackBar(
-          text: 'Failed to delete task', status: SnakeBarStatus.error);
-      debugPrint('Failed to delete task: $err');
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
-  }
+  // Future<void> deleteTask({
+  //   required String taskId,
+  //   required String teamId,
+  // }) async {
+  //   isLoading = true;
+  //   notifyListeners();
+  //   try {
+  //     // delete task from tasks collection
+  //     await tasksCollection.doc(taskId).delete();
+  //
+  //     // delete task from team document
+  //     final teamDocRef = firestore.collection('teams').doc(teamId);
+  //     final tasksList = await teamDocRef.get().then((teamSnap) {
+  //       final List<dynamic>? existingTasks = teamSnap['tasks'];
+  //       if (existingTasks != null) {
+  //         existingTasks.remove(taskId);
+  //         return existingTasks;
+  //       } else {
+  //         return [];
+  //       }
+  //     });
+  //
+  //     await teamDocRef.update({'tasks': tasksList}).then((value) {
+  //       UiMethods.showSnackBar(
+  //           text: 'Task deleted', status: SnakeBarStatus.success);
+  //     });
+  //   } catch (err) {
+  //     UiMethods.showSnackBar(
+  //         text: 'Failed to delete task', status: SnakeBarStatus.error);
+  //     debugPrint('Failed to delete task: $err');
+  //   } finally {
+  //     isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
   void toggleAssignMember(String email) {
     if (taskAssignedMembers.containsKey(email)) {
@@ -313,6 +338,96 @@ class TaskViewModel extends ChangeNotifier {
 
     return null; // File not found or an error occurred
   }
+
+  deleteTask(
+      {required TaskModel taskModel,
+      required String teamId,
+      required BuildContext context}) async {
+    if (taskModel.owner == FirebaseAuth.instance.currentUser!.email) {
+      final docSnap = await FirebaseFirestore.instance
+          .collection('teams')
+          .doc(teamId)
+          .get();
+      List queue = docSnap.get('tasks');
+      if (queue.contains(taskModel.taskId) == true) {
+        FirebaseFirestore.instance.collection('teams').doc(teamId).update({
+          "tasks": FieldValue.arrayRemove([taskModel.taskId])
+        }).then((value) {
+          FirebaseFirestore.instance
+              .collection('tasks')
+              .doc(taskModel.taskId)
+              .delete()
+              .then((value) {
+            UiMethods.showSnackBar(
+                text: "Deleted", status: SnakeBarStatus.success);
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (context) => HomeScreen()));
+          });
+        });
+      } else {
+        UiMethods.showSnackBar(text: "Not Found", status: SnakeBarStatus.error);
+      }
+    }
+  }
+
+  String currentTaskStatue = "Completed";
+  List<String> myTaskStatus = [
+    "Completed",
+    "In Progress",
+    "In Progressd",
+  ];
+
+  submitTasks({required String taskId, required BuildContext context}) {
+    if (currentTaskStatue != "") {
+      FirebaseFirestore.instance
+          .collection('tasks')
+          .doc(taskId)
+          .update({"status": currentTaskStatue}).then((value) {
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(FirebaseAuth.instance.currentUser!.email)
+            .collection('tasks')
+            .doc(taskId)
+            .update({"status": currentTaskStatue}).then((value) {
+          UiMethods.showSnackBar(
+              text: "Success", status: SnakeBarStatus.success);
+          Navigator.pop(context);
+        });
+      });
+    }
+  }
+
+  changeStatus(String status) {
+    currentTaskStatue = status;
+    notifyListeners();
+  }
+
+  // TaskStatus? currentStatus;
+  // TaskStatus getCurrentStatus(String status) {
+  //   switch (status) {
+  //     case 'notStarted':
+  //       return TaskStatus.notStarted;
+  //     case 'inProgress':
+  //       return TaskStatus.inProgress;
+  //     case 'completed':
+  //       return TaskStatus.completed;
+  //     default:
+  //       return TaskStatus.notStarted;
+  //   }
+  // }
+  //
+  // String getStatusString(TaskStatus status) {
+  //   switch (status) {
+  //     case TaskStatus.notStarted:
+  //       return 'Not Started';
+  //     case TaskStatus.inProgress:
+  //       return 'In Progress';
+  //     case TaskStatus.completed:
+  //       return 'Completed';
+  //     default:
+  //       return '';
+  //   }
+  // }
 }
 
 class FirebaseApi {

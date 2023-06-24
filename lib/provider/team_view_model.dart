@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:mtrack/helper/ui_helper.dart';
 import 'package:mtrack/models/team_model.dart';
+import 'package:mtrack/models/user_model.dart';
+import 'package:mtrack/screens/pages/home_pages/home.dart';
 import 'package:mtrack/utils/enums.dart';
 
 class TeamViewModel extends ChangeNotifier {
@@ -180,7 +182,57 @@ class TeamViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  leaveTeam(String teamId) {
-    teamModelList.removeWhere((element) => element.teamId == teamId);
+  leaveTeam(String teamId, BuildContext context) async {
+    final docSnap = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .get();
+    List queue = docSnap.get('myTeams');
+    if (queue.contains(teamId) == true) {
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .update({
+        "myTeams": FieldValue.arrayRemove([teamId])
+      }).then((value) {
+        UiMethods.showSnackBar(text: "Leave", status: SnakeBarStatus.success);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomeScreen()));
+      });
+    } else {
+      UiMethods.showSnackBar(text: "Not Found", status: SnakeBarStatus.error);
+    }
+  }
+
+  List<UserModel> teamMember = [];
+  getTeamMember(String teamId) {
+    teamMember = [];
+    notifyListeners();
+    FirebaseFirestore.instance
+        .collection('teams')
+        .doc(teamId)
+        .collection('users')
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        UserModel userModel = UserModel.fromJson(element.data());
+        teamMember.add(userModel);
+      });
+      notifyListeners();
+    });
+  }
+
+  deleteTeamMember({required String teamId, required String email}) {
+    FirebaseFirestore.instance
+        .collection('teams')
+        .doc(teamId)
+        .collection('users')
+        .doc(email)
+        .delete()
+        .then((value) {
+      UiMethods.showSnackBar(
+          text: "User Deleted", status: SnakeBarStatus.success);
+      getTeamMember(teamId);
+    });
   }
 }

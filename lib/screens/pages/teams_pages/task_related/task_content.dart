@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:mtrack/models/task_model.dart';
 import 'package:mtrack/models/team_model.dart';
@@ -8,15 +7,14 @@ import 'package:provider/provider.dart';
 
 import '../../../../provider/task_view_model.dart';
 
-// ignore: must_be_immutable
 class TaskContent extends StatefulWidget {
-  final TeamModel teamModel;
+  final TeamModel? teamModel;
   TaskModel taskModel;
 
   TaskContent({
     Key? key,
     required this.taskModel,
-    required this.teamModel,
+    this.teamModel,
   }) : super(key: key);
 
   @override
@@ -24,6 +22,11 @@ class TaskContent extends StatefulWidget {
 }
 
 class _TaskContentState extends State<TaskContent> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   bool isTaskCompleted = false;
   double progress = 0.5;
   List<String> assignedPeople = ['John', 'Jane', 'Mark'];
@@ -48,25 +51,12 @@ class _TaskContentState extends State<TaskContent> {
     });
   }
 
-  TaskStatus _getCurrentStatus(String status) {
-    switch (status) {
-      case 'notStarted':
-        return TaskStatus.notStarted;
-      case 'inProgress':
-        return TaskStatus.inProgress;
-      case 'completed':
-        return TaskStatus.completed;
-      default:
-        return TaskStatus.notStarted;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     DateTime startDate = DateTime.now();
     DateTime dueDate = DateTime.now().add(const Duration(days: 7));
     final tasks = context.watch<TaskViewModel>();
-    TaskStatus? currentStatus;
+
     // Future<void> selectStartDate() async {
     //   final selectedDate = await showDatePicker(
     //     context: context,
@@ -90,7 +80,6 @@ class _TaskContentState extends State<TaskContent> {
     //     dueDate = selectedDate;
     //   }
     // }
-    currentStatus = _getCurrentStatus(widget.taskModel.taskStatus!);
 
     return Scaffold(
       body: Container(
@@ -113,26 +102,27 @@ class _TaskContentState extends State<TaskContent> {
                   DropdownButton(
                     dropdownColor: Theme.of(context).primaryColorLight,
                     isDense: true,
-                    value: currentStatus,
-                    items: TaskStatus.values.map((status) {
-                      return DropdownMenuItem<TaskStatus>(
+                    value: tasks.currentTaskStatue,
+                    items: tasks.myTaskStatus.map((status) {
+                      return DropdownMenuItem<String>(
                         value: status,
                         child: Text(
-                          _getStatusString(status),
+                          status,
                         ),
                       );
                     }).toList(),
-                    onChanged: (TaskStatus? value) async {
+                    onChanged: (value) async {
+                      tasks.changeStatus(value!);
                       // Remove setState as we are using Provider package
-                      currentStatus = value!;
-                      print(currentStatus);
-                      // Send to Firebase using the Provider method
-                      final updateTask =
-                          Provider.of<TaskViewModel>(context, listen: false);
-                      await updateTask.updateTaskStatus(
-                          currentStatus!, widget.taskModel.taskId!);
-                      widget.taskModel.taskStatus =
-                          currentStatus.toString().split('.').last;
+                      // tasks.currentStatus = value!;
+                      // print(tasks.currentStatus);
+                      // // Send to Firebase using the Provider method
+                      // final updateTask =
+                      //     Provider.of<TaskViewModel>(context, listen: false);
+                      // await updateTask.updateTaskStatus(
+                      //     tasks.currentStatus!, widget.taskModel.taskId!);
+                      // widget.taskModel.taskStatus =
+                      //     tasks.currentStatus.toString().split('.').last;
                     },
                   ),
                 ],
@@ -172,22 +162,24 @@ class _TaskContentState extends State<TaskContent> {
                           : Text('No assigned people'),
                     ],
                   ),
-                  IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AssignUserScreen(
-                                    teamModel: widget.teamModel,
-                                    taskModel: widget.taskModel,
-                                  )));
-                      // widget.taskModel.assignedTo!.isNotEmpty
-                      //     ? showAssignMemberPopup(context,
-                      //         widget.taskModel.assignedTo as List<String>)
-                      //     : null;
-                    },
-                    icon: const Icon(Icons.add_outlined),
-                  ),
+                  widget.teamModel == null
+                      ? SizedBox()
+                      : IconButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => AssignUserScreen(
+                                          teamModel: widget.teamModel!,
+                                          taskModel: widget.taskModel,
+                                        )));
+                            // widget.taskModel.assignedTo!.isNotEmpty
+                            //     ? showAssignMemberPopup(context,
+                            //         widget.taskModel.assignedTo as List<String>)
+                            //     : null;
+                          },
+                          icon: const Icon(Icons.add_outlined),
+                        ),
                 ],
               ),
               const Divider(),
@@ -289,24 +281,56 @@ class _TaskContentState extends State<TaskContent> {
                     ),
                   ),
                 ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * .45,
+                child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    separatorBuilder: (context, index) => SizedBox(
+                          height: 10,
+                        ),
+                    itemCount: tasks.allUserInTask.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.5),
+                          color: Theme.of(context).primaryColorLight,
+                        ),
+                        padding: const EdgeInsets.all(8),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: NetworkImage(
+                                  tasks.allUserInTask[index].image ?? ""),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "${tasks.allUserInTask[index].fName} ${tasks.allUserInTask[index].lName}",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    tasks.allUserInTask[index].email ?? "",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }),
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  String _getStatusString(TaskStatus status) {
-    switch (status) {
-      case TaskStatus.notStarted:
-        return 'Not Started';
-      case TaskStatus.inProgress:
-        return 'In Progress';
-      case TaskStatus.completed:
-        return 'Completed';
-      default:
-        return '';
-    }
   }
 
   void showAssignMemberPopup(BuildContext context, List<String> teamMembers) {

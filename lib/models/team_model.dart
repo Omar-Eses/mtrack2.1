@@ -22,7 +22,7 @@ class TeamModel {
   TeamModel.fromJson(Map<String, dynamic> json) {
     name = json['name'];
     desc = json['desc'];
-    owner = json['teamOwner'];
+    owner = json['owner'];
     members = json['members'];
     tasks = json['tasks'];
     teamId = json['teamId'];
