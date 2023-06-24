@@ -1,9 +1,17 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mtrack/helper/ui_helper.dart';
 import 'package:mtrack/models/task_model.dart';
+import 'package:mtrack/models/team_model.dart';
 import 'package:mtrack/utils/enums.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 class TaskViewModel extends ChangeNotifier {
   // CRUD task operations
@@ -34,12 +42,15 @@ class TaskViewModel extends ChangeNotifier {
     required String taskMaker,
     required DateTime startDate,
     required DateTime finishDate,
-    required String teamId,
+    required TeamModel teamModel,
   }) async {
     try {
+      if (file != null) {
+        await uploadFile();
+      }
       isLoading = true;
       notifyListeners();
-      print(teamId);
+      print(teamModel.teamId);
       DocumentReference docRef = firestore.collection('tasks').doc();
       String taskId = docRef.id;
 
@@ -51,13 +62,16 @@ class TaskViewModel extends ChangeNotifier {
         startDate: DateFormat('dd-MM-yyyy').format(startDate),
         finishDate: DateFormat('dd-MM-yyyy').format(finishDate),
         taskId: taskId,
+        attach: file == null ? "" : urlDownload,
       );
 
       // add task to tasks collection
-      await docRef.set(taskModel.toMap());
+      await docRef.set(taskModel.toMap()).then((value) async {
+        await getAllTasks(teamModel.tasks!);
+      });
 
       // Update tasks list in team document
-      final teamDocRef = firestore.collection('teams').doc(teamId);
+      final teamDocRef = firestore.collection('teams').doc(teamModel.teamId);
       final tasksList = await teamDocRef.get().then((teamSnap) {
         final List<dynamic>? existingTasks = teamSnap['tasks'];
         if (existingTasks != null) {
@@ -116,6 +130,23 @@ class TaskViewModel extends ChangeNotifier {
       debugPrint('Failed to read tasks: $err');
       return [];
     }
+  }
+
+  List<TaskModel> allTasks = [];
+  getAllTasks(List tasks) {
+    allTasks = [];
+    notifyListeners();
+    tasks.forEach((element) {
+      FirebaseFirestore.instance
+          .collection('tasks')
+          .doc(element)
+          .get()
+          .then((value) {
+        TaskModel taskModel = TaskModel.fromJson(value.data()!);
+        allTasks.add(taskModel);
+        notifyListeners();
+      });
+    });
   }
 
   // update task method
@@ -202,5 +233,106 @@ class TaskViewModel extends ChangeNotifier {
 
     await taskRef.update({'task': newStatus.toString().split('.').last});
     notifyListeners();
+  }
+
+  Future downloadFile(reference) async {
+    final dir = await getApplicationDocumentsDirectory();
+    final file = File("${dir.path}/${reference}");
+
+    await reference.writeToFile(file);
+    UiMethods.showSnackBar(text: "Downloaded", status: SnakeBarStatus.success);
+  }
+
+  getFileName(String link) {
+    RegExp regExp = new RegExp(r'.+(\/|%2F)(.+)\?.+');
+    //This Regex won't work if you remove ?alt...token
+    var matches = regExp.allMatches(link);
+
+    var match = matches.elementAt(0);
+
+    return "${Uri.decodeFull(match.group(2)!)}";
+  }
+
+  UploadTask? task;
+  File? file;
+
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles(allowMultiple: false);
+
+    if (result == null) return;
+    final path = result.files.single.path!;
+
+    file = File(path);
+    notifyListeners();
+  }
+
+  var urlDownload;
+  Future uploadFile() async {
+    if (file == null) return;
+
+    final fileName = basename(file!.path);
+    final destination = 'files/$fileName';
+
+    task = FirebaseApi.uploadFile(destination, file!);
+    notifyListeners();
+
+    if (task == null) return;
+
+    final snapshot = await task!.whenComplete(() {});
+    urlDownload = await snapshot.ref.getDownloadURL();
+
+    print('Download-Link: $urlDownload');
+  }
+
+  uploadFileToTask({required TaskModel taskModel}) async {
+    await uploadFile();
+    FirebaseFirestore.instance
+        .collection('tasks')
+        .doc(taskModel.taskId)
+        .update({
+      "attach": "$urlDownload",
+    }).then((value) {
+      file = null;
+      notifyListeners();
+    });
+  }
+
+  Future<String?> getFileFromFirebaseStorage(String fileName) async {
+    try {
+      // Create a reference to the file
+      Reference reference = FirebaseStorage.instance.ref().child(fileName);
+
+      // Get the download URL for the file
+      String downloadURL = await reference.getDownloadURL();
+
+      // Return the download URL
+      return downloadURL;
+    } catch (e) {
+      print('Error: $e');
+    }
+
+    return null; // File not found or an error occurred
+  }
+}
+
+class FirebaseApi {
+  static UploadTask? uploadFile(String destination, File file) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      return ref.putFile(file);
+    } on FirebaseException catch (e) {
+      return null;
+    }
+  }
+
+  static UploadTask? uploadBytes(String destination, Uint8List data) {
+    try {
+      final ref = FirebaseStorage.instance.ref(destination);
+
+      return ref.putData(data);
+    } on FirebaseException catch (e) {
+      return null;
+    }
   }
 }

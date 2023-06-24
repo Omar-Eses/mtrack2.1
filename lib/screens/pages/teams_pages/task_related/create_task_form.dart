@@ -1,14 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mtrack/models/team_model.dart';
 import 'package:mtrack/provider/task_view_model.dart';
 import 'package:mtrack/widgets/custom_txt_form_field.dart';
 import 'package:provider/provider.dart';
 
 class CreateTaskForm extends StatefulWidget {
   final List members;
-  String? teamId;
+  TeamModel? teamModel;
 
-  CreateTaskForm({Key? key, required this.members, required this.teamId})
+  CreateTaskForm({Key? key, required this.members, required this.teamModel})
       : super(key: key);
 
   @override
@@ -36,7 +37,7 @@ class _CreateTaskFormState extends State<CreateTaskForm> {
                   taskMaker: userEmail!,
                   startDate: startDate!,
                   finishDate: dueDate!,
-                  teamId: widget.teamId!,
+                  teamModel: widget.teamModel!,
                 );
                 // go back to team screen
                 Navigator.pop(context);
@@ -134,7 +135,7 @@ class _CreateTaskFormState extends State<CreateTaskForm> {
                 const SizedBox(height: 7),
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: Handle upload attachment action
+                    newTask.selectFile();
                   },
                   child: const Text('Upload Attachment'),
                 ),
@@ -163,10 +164,10 @@ class _CreateTaskFormState extends State<CreateTaskForm> {
                             taskMaker: userEmail!,
                             startDate: startDate!,
                             finishDate: dueDate!,
-                            teamId: widget.teamId!,
+                            teamModel: widget.teamModel!,
                           );
+
                           // go back to team screen
-                          Navigator.pop(context);
                         }
                       },
                       child: const Text('Done'),

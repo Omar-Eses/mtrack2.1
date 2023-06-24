@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mtrack/firebase_options.dart';
 import 'package:mtrack/helper/cache_helper.dart';
 import 'package:mtrack/provider/add_member_view_model.dart';
+import 'package:mtrack/provider/assign_view_model.dart';
 import 'package:mtrack/provider/auth_view_model.dart';
 import 'package:mtrack/provider/edit_profile_view_model.dart';
 import 'package:mtrack/provider/home_view_model.dart';
@@ -62,6 +63,7 @@ class _MahamAppState extends State<MahamApp> {
         ChangeNotifierProvider(create: (_) => ThemeSettings()),
         ChangeNotifierProvider(create: (_) => AddMemberViewModel()),
         ChangeNotifierProvider(create: (_) => EditProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => AssignViewModel()),
       ],
       child: MaterialApp(
         home: const Wrapper(),

@@ -464,6 +464,24 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "path_provider",
+      "rootUri": "file:///Users/thamerkehail/.pub-cache/hosted/pub.dev/path_provider-2.0.15",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "path_provider_android",
+      "rootUri": "file:///Users/thamerkehail/.pub-cache/hosted/pub.dev/path_provider_android-2.0.27",
+      "packageUri": "lib/",
+      "languageVersion": "2.17"
+    },
+    {
+      "name": "path_provider_foundation",
+      "rootUri": "file:///Users/thamerkehail/.pub-cache/hosted/pub.dev/path_provider_foundation-2.2.3",
+      "packageUri": "lib/",
+      "languageVersion": "2.18"
+    },
+    {
       "name": "path_provider_linux",
       "rootUri": "file:///Users/thamerkehail/.pub-cache/hosted/pub.dev/path_provider_linux-2.1.11",
       "packageUri": "lib/",
@@ -692,7 +710,7 @@
       "languageVersion": "3.0"
     }
   ],
-  "generated": "2023-06-20T17:55:22.866544Z",
+  "generated": "2023-06-23T20:07:57.322365Z",
   "generator": "pub",
   "generatorVersion": "3.0.3"
 }

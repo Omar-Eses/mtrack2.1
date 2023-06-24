@@ -179,4 +179,8 @@ class TeamViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+  leaveTeam(String teamId) {
+    teamModelList.removeWhere((element) => element.teamId == teamId);
+  }
 }

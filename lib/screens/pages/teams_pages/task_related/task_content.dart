@@ -1,17 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
 import 'package:mtrack/models/task_model.dart';
+import 'package:mtrack/models/team_model.dart';
+import 'package:mtrack/screens/pages/teams_pages/assign_user_screen.dart';
+import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../provider/task_view_model.dart';
 
 // ignore: must_be_immutable
 class TaskContent extends StatefulWidget {
+  final TeamModel teamModel;
   TaskModel taskModel;
+
   TaskContent({
     Key? key,
     required this.taskModel,
+    required this.teamModel,
   }) : super(key: key);
 
   @override
@@ -60,7 +65,7 @@ class _TaskContentState extends State<TaskContent> {
   Widget build(BuildContext context) {
     DateTime startDate = DateTime.now();
     DateTime dueDate = DateTime.now().add(const Duration(days: 7));
-    final updateTask = context.watch<TaskViewModel>();
+    final tasks = context.watch<TaskViewModel>();
     TaskStatus? currentStatus;
     // Future<void> selectStartDate() async {
     //   final selectedDate = await showDatePicker(
@@ -169,10 +174,17 @@ class _TaskContentState extends State<TaskContent> {
                   ),
                   IconButton(
                     onPressed: () {
-                      widget.taskModel.assignedTo!.isNotEmpty
-                          ? showAssignMemberPopup(context,
-                              widget.taskModel.assignedTo as List<String>)
-                          : null;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AssignUserScreen(
+                                    teamModel: widget.teamModel,
+                                    taskModel: widget.taskModel,
+                                  )));
+                      // widget.taskModel.assignedTo!.isNotEmpty
+                      //     ? showAssignMemberPopup(context,
+                      //         widget.taskModel.assignedTo as List<String>)
+                      //     : null;
                     },
                     icon: const Icon(Icons.add_outlined),
                   ),
@@ -232,42 +244,51 @@ class _TaskContentState extends State<TaskContent> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.attachment_sharp),
-                    onPressed: () {},
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.attachment_sharp),
+                        onPressed: () {
+                          tasks.selectFile();
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.upload),
+                        onPressed: () {
+                          tasks.uploadFileToTask(taskModel: widget.taskModel);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),
+              Text(
+                tasks.file != null
+                    ? basename(tasks.file!.path)
+                    : 'No File Selected',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+              ),
               const SizedBox(height: 5.0),
-              SizedBox(
-                width: 200,
-                child: Wrap(
-                  spacing: 8.0, // Adjust spacing between attachments
-                  runSpacing: 4.0, // Adjust spacing between rows of attachments
-                  children: attachments
-                      .map(
-                        (attachment) => TextButton(
-                          onPressed: () {
-                            print('done');
-                          },
-                          child: Row(
-                            children: [
-                              const Icon(Icons.download),
-                              const SizedBox(width: 4.0),
-                              Text(
-                                attachment,
-                                style: const TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ],
+              if (widget.taskModel.attach != "")
+                SizedBox(
+                  width: 200,
+                  child: InkWell(
+                    onTap: () async {},
+                    child: Row(
+                      children: [
+                        const Icon(Icons.download),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          tasks.getFileName(widget.taskModel.attach!),
+                          style: const TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: Colors.blue,
                           ),
                         ),
-                      )
-                      .toList(),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
             ],
           ),
         ),
